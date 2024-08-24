@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema APP</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid #ccc;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+      background-color: #f9f9f9;
+    }
+    th {
+      background-color: #4CAF50;
+      color: #fff;
+    }
+    button {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3e8e41;
+    }
+  </style>
+</head>
+<body>
+  <h1>Frases:D</h1>
+  <div id="app">
+    <table>
+      <tr>
+        <th>Lista de Frases</th>
+        <th>Autor</th>
+        <th>Acciones</th>
+      </tr>
+      <tr v-for="(fra, index) in fras" :key="index">
+        <td>{{ fra.nombre }}</td>
+        <td>{{ fra.autor }}</td>
+        <td>
+          <button @click="editarFra(index)">Editar</button>
+          <button @click="eliminarFra(index)">Eliminar</button>
+        </td>
+      </tr>
+    </table>
+    <button @click="agregarFra">Agregar nueva frase</button>
+    <div v-if="editar">
+      <h2>Editar Fra</h2>
+      <form @submit.prevent="guardarCambios">
+        <label>Nombre:</label>
+        <input type="text" v-model="fraEditar.nombre">
+        <br>
+        <label>Autor:</label>
+        <input type="text" v-model="fraEditar.autor">
+        <br>
+        <button type="submit">Guardar cambios</button>
+      </form>
+    </div>
+    <div v-if="agregar">
+      <h2>Agregar nueva frase</h2>
+      <form @submit.prevent="guardarNuevaFra">
+        <label>Nombre:</label>
+        <input type="text" v-model="nuevaFra.nombre">
+        <br>
+        <label>Autor:</label>
+        <input type="text" v-model="nuevaFra.autor">
+        <br>
+        <button type="submit">Agregar</button>
+      </form>
+    </div>
+  </div>
+  <script src="http://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    Vue.createApp({
+      data() {
+        return {
+          fras: [
+            { nombre: 'La vida es bella', autor: 'Charlie Chaplin' },
+            { nombre: 'El poder de la imaginación', autor: 'Albert Einstein' },
+            { nombre: 'La felicidad es una elección', autor: 'Dalai Lama' },
+            { nombre: 'El conocimiento es poder', autor: 'Francis Bacon' },
+            { nombre: 'La perseverancia es la clave del éxito', autor: 'Thomas Edison' },
+          ],
+          editar: false,
+          fraEditar: {},
+          agregar: false,
+          nuevaFra: {}
+        }
+      },
+      methods: {
+        editarFra(index) {
+          this.editar = true;
+          this.fraEditar = { ...this.fras[index] };
+        },
+        eliminarFra(index) {
+          if (confirm(`¿Estás seguro de eliminar la fra ${this.fras[index].nombre}?`)) {
+            this.fras.splice(index, 1);
+          }
+        },
+        guardarCambios() {
+          this.fras[this.fras.indexOf(this.fraEditar)] = this.fraEditar;
+          this.editar = false;
+        },
+        agregarFra() {
+          this.agregar = true;
+          this.nuevaFra = {};
+        },
+        guardarNuevaFra() {
+          this.fras.push(this.nuevaFra);
+          this.agregar = false;
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
